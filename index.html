@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Link in Bio website Maker</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    body {
+      background: #0d1b2a;
+      color: #e0e1dd;
+      font-family: monospace;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      color: #00ff9d;
+      margin-bottom: 1rem;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      background: #1b263b;
+      color: #e0e1dd;
+      border: none;
+      padding: 1rem;
+      font-family: monospace;
+      margin-bottom: 1rem;
+      resize: vertical;
+    }
+    button {
+      background: #00ff9d;
+      color: #0d1b2a;
+      font-weight: bold;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      margin-right: 1rem;
+      margin-bottom: 2rem;
+    }
+    button:hover {
+      background: #00e68a;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      border: 1px solid #00ff9d;
+      margin-top: 1rem;
+    }
+    footer {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: #748cab;
+      text-align: center;
+    }
+    a {
+      color: #00b4d8;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Link in bio maker!</h1>
+
+<textarea id="name" placeholder="Enter your site name here..." style="height: 30px;"></textarea>
+
+<textarea id="markdown" placeholder="Paste your markdown here..."># Hello  
+This is a sample bio page. You can add links, lists and images!
+
+## Links
+- [Github repo](https://github.com/JoplayXYZ/LinkInBio)
+- [Demo link](https://github.com/JoplayXYZ/LinkInBio)
+
+https://github.com/JoplayXYZ/LinkInBio
+</textarea>
+
+<br />
+<button onclick="convert()">Convert & Preview</button>
+<button id="downloadButton" style="display:none" onclick="downloadHtml()">Download as .HTML</button>
+<button id="viewCodeButton" style="display:none" onclick="viewCode()">View Code</button>
+
+<iframe id="preview"></iframe>
+
+<footer>
+  View on <a href="https://github.com/JoplayXYZ/LinkInBio" target="_blank">Github</a>
+</footer>
+<script>
+let latestHtml = "";
+
+function convert() {
+  const md = document.getElementById("markdown").value;
+  const siteName = document.getElementById("name").value.trim() || "site";
+  const htmlContent = marked.parse(md);
+
+  latestHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>${siteName}</title>
+<style>
+  :root {
+    --bg: #0d1b2a;
+    --text: #e0e1dd;
+    --accent: #00ff9d;
+    --link: #00b4d8;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: monospace;
+    line-height: 1.6;
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+  }
+  h1, h2, h3 {
+    color: var(--accent);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  a {
+    color: var(--link);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  pre {
+    background: #1b263b;
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  code {
+    background: #1b263b;
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+  footer {
+    margin-top: 4rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #748cab;
+  }
+</style>
+</head>
+<body>
+${htmlContent}
+<footer>
+  View on <a href="https://github.com/JoplayXYZ/LinkInBio">Github</a>
+</footer>
+</body>
+</html>`;
+
+  const blob = new Blob([latestHtml], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+
+  document.getElementById("preview").src = url;
+  document.getElementById("downloadButton").style.display = "inline-block";
+  document.getElementById("viewCodeButton").style.display = "inline-block";
+}
+
+function downloadHtml() {
+  const siteName = document.getElementById("name").value.trim() || "site";
+  const blob = new Blob([latestHtml], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${siteName}-link-in-bio-website.html`;
+  a.click();
+}
+
+function viewCode() {
+  const escaped = latestHtml
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  const win = window.open("", "_blank");
+  win.document.write(`
+    <html>
+      <head>
+        <title>Generated Code</title>
+        <style>
+          body {
+            background: #0d1b2a;
+            color: #d5dbdb;
+            font-family: monospace;
+            padding: 2rem;
+          }
+          pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Generated HTML</h1>
+        <pre>${escaped}</pre>
+      </body>
+    </html>
+  `);
+}
+</script>
+
+</body>
+</html>
