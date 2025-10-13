@@ -57,15 +57,24 @@
     a {
       color: #00b4d8;
     }
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .buttons {
+      flex-direction: row;
+    }
   </style>
 </head>
 <body>
-
+<main>
 <h1>Link in bio maker!</h1>
 
 <textarea id="name" placeholder="Enter your site name here..." style="height: 30px;"></textarea>
 
-<textarea id="markdown" placeholder="Paste your markdown here..."># Hello  
+<textarea id="markdown" placeholder="Paste your markdown here...">
+# Hello  
 This is a sample bio page. You can add links, lists and images!
 
 ## Links
@@ -75,38 +84,17 @@ This is a sample bio page. You can add links, lists and images!
 https://github.com/chjk-studios/LinkInBio
 </textarea>
 
-<br />
-<button onclick="convert()">Convert & Preview</button>
-<button id="downloadButton" style="display:none" onclick="downloadHtml()">Download as .HTML</button>
-<button id="viewCodeButton" style="display:none" onclick="viewCode()">View Code</button>
-
-<iframe id="preview"></iframe>
-
-<footer>
-  View on <a href="https://github.com/chjk-studios/LinkInBio" target="_blank">Github</a>
-</footer>
-<script>
-let latestHtml = "";
-
-function convert() {
-  const md = document.getElementById("markdown").value;
-  const siteName = document.getElementById("name").value.trim() || "site";
-  const htmlContent = marked.parse(md);
-
-  latestHtml = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>${siteName}</title>
-<style>
+<textarea id="css" placeholder="Write custom css for your site here! A site without css will NOT have any styling!" style="height: 100px; resize: vertical;">
+  /* Write custom css for your site here, 
+  or just keep it default.
+  You can edit these colors to change the basic colors of your site */
   :root {
     --bg: #0d1b2a;
     --text: #e0e1dd;
     --accent: #00ff9d;
     --link: #00b4d8;
   }
+  /* Ignore this if you only need basic color settings */
   body {
     background: var(--bg);
     color: var(--text);
@@ -145,6 +133,38 @@ function convert() {
     font-size: 0.85rem;
     color: #748cab;
   }
+</textarea>
+
+<br />
+<div class="buttons">
+<button onclick="convert()">Convert & Preview</button>
+<button id="downloadButton" style="display:none" onclick="downloadHtml()">Download as .HTML</button>
+<button id="viewCodeButton" style="display:none" onclick="viewCode()">View Code</button>
+</div>
+<iframe id="preview"></iframe>
+
+<footer>
+  View on <a href="https://github.com/chjk-studios/LinkInBio" target="_blank">Github</a>
+</footer>
+</main>
+<script>
+let latestHtml = "";
+
+function convert() {
+  const md = document.getElementById("markdown").value;
+  const siteName = document.getElementById("name").value.trim() || "site";
+  const htmlContent = marked.parse(md);
+  const cssContent = document.getElementById("css").value;
+
+  latestHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>${siteName}</title>
+<style>
+  ${cssContent}
 </style>
 </head>
 <body>
